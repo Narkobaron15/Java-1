@@ -1,0 +1,15 @@
+<hibernate-configuration>
+    <session-factory>
+        <!-- Database connection details -->
+        <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/java_salo</property>
+        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.password"></property>
+
+        <!-- Other Hibernate settings -->
+        <property name="hibernate.dialect">org.hibernate.dialect.MariaDBDialect</property>
+
+        <!-- Mapping annotated classes -->
+        <mapping class="org.example.models.User" />
+    </session-factory>
+</hibernate-configuration>

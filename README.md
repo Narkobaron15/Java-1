@@ -27,7 +27,7 @@ or using Scanner instance (passing `System.in` as a parameter).
 
 ### String
 
-`String` class is *CAPITALIZED*.  
+`String` class is **Capitalized**.  
 Compare string using `.equals()` or `.equalsIgnoreCase()`, operator `==` will act as `ReferenceEquals()`.
 
 ### Try-catch-finally

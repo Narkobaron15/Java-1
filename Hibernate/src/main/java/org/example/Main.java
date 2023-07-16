@@ -1,44 +1,26 @@
-// packages are basically c# namespaces
 package org.example;
 
-// using a package
-import org.example.exts.DbManipulations;
 import org.example.exts.StringExts;
+import org.example.models.User;
+import org.example.orm.DbUtil;
+import org.example.orm.UserDAO;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public final class Example {
+public class Main {
     public static void main(String[] args) {
-        // url is the JDBC connection string
-        // (syntax: jdbc:provider://path_to_db{/database_name} (database name is optional)
-        // final is a constant
-        final String url = "jdbc:mariadb://localhost:3306",
-                user = "root", password = "";
-
-        // block try-catch also works as C# "using" statement.
-        // connection to the database SERVER
-        try (Connection serverConn = DriverManager.getConnection(url, user, password)) {
-            String dbName = "java_salo";
-            DbManipulations.ensureDbExists(serverConn, dbName);
-
-            // connection to the database
-            try (Connection dbConn = DriverManager.getConnection(url + "/" + dbName, user, password)) {
-                UserDbWorker.ensureUsersTable(dbConn);
-                Example.menu(dbConn);
-            }
+        try (DbUtil util = new DbUtil();
+                UserDAO dao = new UserDAO(util.getSessionFactory())) {
+            menu(dao);
         } catch (Exception ex) {
-            // writes a line to the console and moves to the next line
-//            System.out.println(StringExts.ANSI_RED +
-//                    "Something went wrong: " + ex.getMessage() +
-//                    StringExts.ANSI_RESET);
-
-                StringExts.printRed("Something went wrong: " + ex.getMessage());
+            StringExts.printRed("Something went wrong: " + ex.getMessage());
         }
     }
 
-    public static void menu(Connection connection) throws SQLException {
+    public static void menu(UserDAO DAO) throws SQLException {
         // Scanner reads data from the specified stream
         Scanner scanner = new Scanner(System.in);
         boolean exit = false;
@@ -57,7 +39,7 @@ public final class Example {
                         String username = scanner.nextLine();
                         StringExts.printPurple("Enter email: ");
                         String email = scanner.nextLine();
-                        boolean createResult = UserDbWorker.Create(connection, username, email);
+                        boolean createResult = DAO.create(username, email);
 
                         if (createResult) {
                             StringExts.printGreen("User created successfully.");
@@ -66,25 +48,27 @@ public final class Example {
                         }
                     }
                     case 2 -> {
-                        String allUsers = UserDbWorker.Read(connection);
-                        StringExts.printGreen(allUsers);
+                        for (User u: DAO.readAll()) {
+                            StringExts.printGreen(u.toString());
+                        }
                     }
                     case 3 -> {
                         StringExts.printPurple("Enter user ID: ");
-                        int userId = scanner.nextInt();
+                        Long userId = scanner.nextLong();
                         scanner.nextLine(); // Consume the newline character
-                        String userById = UserDbWorker.Read(connection, userId);
-                        StringExts.printGreen(userById);
+                        User userById = DAO.readById(userId);
+                        if (userById == null) StringExts.printRed("User is not found");
+                        else StringExts.printGreen(userById.toString());
                     }
                     case 4 -> {
                         StringExts.printPurple("Enter user ID: ");
-                        int updateId = scanner.nextInt();
+                        Long updateId = scanner.nextLong();
                         scanner.nextLine(); // Consume the newline character
                         StringExts.printPurple("Enter new username: ");
                         String newUsername = scanner.nextLine();
                         StringExts.printPurple("Enter new email: ");
                         String newEmail = scanner.nextLine();
-                        boolean updateResult = UserDbWorker.Update(connection, updateId, newUsername, newEmail);
+                        boolean updateResult = DAO.update(updateId, newUsername, newEmail);
 
                         if (updateResult) {
                             StringExts.printGreen("User updated successfully.");
@@ -94,9 +78,9 @@ public final class Example {
                     }
                     case 5 -> {
                         StringExts.printPurple("Enter user ID: ");
-                        int deleteId = scanner.nextInt();
+                        Long deleteId = scanner.nextLong();
                         scanner.nextLine(); // Consume the newline character
-                        boolean deleteResult = UserDbWorker.Delete(connection, deleteId);
+                        boolean deleteResult = DAO.delete(deleteId);
 
                         if (deleteResult) {
                             StringExts.printGreen("User deleted successfully.");
