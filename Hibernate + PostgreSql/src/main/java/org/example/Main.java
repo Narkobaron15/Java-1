@@ -10,6 +10,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+// https://www.baeldung.com/jpa-joincolumn-vs-mappedby
+
 public class Main {
     public static void main(String[] args) {
         try (HibernateUtil util = new HibernateUtil(); Session s = util.getSession()) {
