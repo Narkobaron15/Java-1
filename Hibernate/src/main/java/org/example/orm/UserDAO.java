@@ -131,10 +131,9 @@ public class UserDAO implements AutoCloseable {
                 session.getTransaction().commit();
                 return true;
             }
-            return false;
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
         }
+        return false;
     }
 }

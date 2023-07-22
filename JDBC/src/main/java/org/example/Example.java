@@ -15,7 +15,7 @@ public final class Example {
         // (syntax: jdbc:provider://path_to_db{/database_name} (database name is optional)
         // final is a constant
         final String url = "jdbc:mariadb://localhost:3306",
-                user = "root", password = "";
+                user = "root", password = "123456";
 
         // block try-catch also works as C# "using" statement.
         // connection to the database SERVER
