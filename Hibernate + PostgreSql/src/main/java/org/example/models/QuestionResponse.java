@@ -4,7 +4,8 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Entity(name = "tbl_question_responses")
+@Entity
+@Table(name = "tbl_question_responses")
 @Data
 @NoArgsConstructor
 public class QuestionResponse {

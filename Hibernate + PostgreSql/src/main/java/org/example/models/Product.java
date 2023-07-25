@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
-@Data @NoArgsConstructor @Entity(name = "tbl_products")
+@Data @NoArgsConstructor @Entity @Table(name = "tbl_products")
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

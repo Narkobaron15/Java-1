@@ -5,7 +5,8 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.Date;
 
-@Entity(name = "tbl_product_images")
+@Entity
+@Table(name = "tbl_product_images")
 @Data
 @NoArgsConstructor
 public class ProductImage {

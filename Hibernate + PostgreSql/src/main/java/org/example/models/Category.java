@@ -10,7 +10,6 @@ import java.util.List;
 
 @Data @Entity @Table(name = "tbl_categories") @NoArgsConstructor
 public class Category {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,4 +23,3 @@ public class Category {
     @OneToMany(mappedBy = "category")
     private List<Product> products;
 }
-
