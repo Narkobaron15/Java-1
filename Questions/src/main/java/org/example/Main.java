@@ -1,12 +1,14 @@
 package org.example;
 
 import org.example.dal.HibernateUtil;
-import org.example.dataaccess.QuestionDAO;
-import org.example.dataaccess.QuestionResponseDAO;
-import org.example.models.Question;
+import org.example.businesslogic.*;
 import org.example.seeders.DatabaseSeeder;
 
+import java.util.Random;
+
 public class Main {
+    private final static Random random = new Random();
+
     public static void main(String[] args) {
         // TODO:
         // Add menu and play mode
@@ -14,15 +16,10 @@ public class Main {
         try (HibernateUtil util = new HibernateUtil()){
             new DatabaseSeeder(util.getSessionFactory()).seedDatabase();
 
-            QuestionDAO questionDAO = new QuestionDAO(util.getSessionFactory());
-            QuestionResponseDAO responseDAO = new QuestionResponseDAO(util.getSessionFactory());
-
-            System.out.println();
-
-            for (Question q:
-                 questionDAO.readAll()) {
-                System.out.println(q);
-            }
+            MillionaireGameMenu menu = new MillionaireGameMenu(util.getSessionFactory());
+            menu.showMenu();
         }
     }
+
+    // https://stackoverflow.com/questions/997482/does-java-support-default-parameter-values
 }

@@ -11,6 +11,12 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 public class QuestionResponse {
+    public QuestionResponse(boolean isTrue, String text, Question question) {
+        this.isTrue = isTrue;
+        this.text = text;
+        this.question = question;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -25,4 +31,9 @@ public class QuestionResponse {
     @ManyToOne
     @JoinColumn(name = "question_id", nullable = false)
     private Question question;
+
+    @Override
+    public String toString() {
+        return text;
+    }
 }

@@ -1,5 +1,6 @@
 package org.example.models;
 
+import com.sun.istack.Nullable;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -14,6 +15,11 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class Question {
+    public Question(String questionType, String text) {
+        this.questionType = questionType;
+        this.text = text;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -25,8 +31,8 @@ public class Question {
     @Column(name = "text", nullable = false)
     private String text;
 
-    @OneToMany(mappedBy = "question")
-    @Fetch(FetchMode.JOIN)
+    @OneToMany(mappedBy = "question", fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
     private List<QuestionResponse> questionResponses;
 
     @Override
@@ -42,10 +48,19 @@ public class Question {
         for (int i = 0; i < questionResponses.size(); i++) {
             builder.append(i + 1)
                     .append(". ")
-                    .append(questionResponses.get(i).getText())
+                    .append(questionResponses.get(i).toString())
                     .append(" ");
         }
 
         return builder.toString();
+    }
+
+    @Nullable
+    public QuestionResponse getCorrectAnswer() {
+        for (QuestionResponse qr: questionResponses)
+            if (qr.isTrue())
+                return qr;
+
+        return null;
     }
 }

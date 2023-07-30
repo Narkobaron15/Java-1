@@ -1,25 +1,25 @@
-package org.example.dataaccess;
+package org.example.businesslogic;
 
-import org.example.models.Question;
+import org.example.models.QuestionResponse;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import java.util.List;
 
-public class QuestionDAO {
+public class QuestionResponseDAO implements IDAO<QuestionResponse, Long> {
     private final SessionFactory sessionFactory;
 
-    public QuestionDAO(SessionFactory sessionFactory) {
+    public QuestionResponseDAO(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
     // Create
-    public void create(Question question) {
+    public void create(QuestionResponse response) {
         Transaction transaction = null;
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-            session.persist(question);
+            session.persist(response);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -30,9 +30,9 @@ public class QuestionDAO {
     }
 
     // Read all
-    public List<Question> readAll() {
+    public List<QuestionResponse> readAll() {
         try (Session session = sessionFactory.openSession()) {
-            return session.createQuery("FROM Question", Question.class).list();
+            return session.createQuery("FROM QuestionResponse", QuestionResponse.class).list();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -40,9 +40,9 @@ public class QuestionDAO {
     }
 
     // Read by ID
-    public Question readById(int id) {
+    public QuestionResponse readById(Long id) {
         try (Session session = sessionFactory.openSession()) {
-            return session.get(Question.class, id);
+            return session.get(QuestionResponse.class, id);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -50,11 +50,11 @@ public class QuestionDAO {
     }
 
     // Update
-    public void update(Question question) {
+    public void update(QuestionResponse response) {
         Transaction transaction = null;
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-            session.merge(question);
+            session.merge(response);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -64,12 +64,12 @@ public class QuestionDAO {
         }
     }
 
-    // Delete
-    public void delete(Question question) {
+    // Remove (Delete)
+    public void delete(QuestionResponse response) {
         Transaction transaction = null;
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-            session.remove(question);
+            session.remove(response);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
