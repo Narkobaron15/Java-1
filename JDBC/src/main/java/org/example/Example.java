@@ -26,103 +26,13 @@ public final class Example {
             // connection to the database
             try (Connection dbConn = DriverManager.getConnection(url + "/" + dbName, user, password)) {
                 UserDbWorker.ensureUsersTable(dbConn);
-                Example.menu(dbConn);
+                Menu menu = new Menu(dbConn);
+                menu.run();
             }
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             // writes a line to the console and moves to the next line
-//            System.out.println(StringExts.ANSI_RED +
-//                    "Something went wrong: " + ex.getMessage() +
-//                    StringExts.ANSI_RESET);
-
-                StringExts.printRed("Something went wrong: " + ex.getMessage());
+            StringExts.printRed("Couldn't connect to the database.\nDetails: " + ex.getMessage());
         }
     }
-
-    public static void menu(Connection connection) throws SQLException {
-        // Scanner reads data from the specified stream
-        Scanner scanner = new Scanner(System.in);
-        boolean exit = false;
-
-        do {
-            try {
-                StringExts.printBlue(choices);
-
-                StringExts.printPurple("Enter your choice: ");
-                int choice = scanner.nextInt();
-                scanner.nextLine(); // Consume the newline character
-
-                switch (choice) {
-                    case 1 -> {
-                        StringExts.printPurple("Enter username: ");
-                        String username = scanner.nextLine();
-                        StringExts.printPurple("Enter email: ");
-                        String email = scanner.nextLine();
-                        boolean createResult = UserDbWorker.Create(connection, username, email);
-
-                        if (createResult) {
-                            StringExts.printGreen("User created successfully.");
-                        } else {
-                            StringExts.printRed("Failed to create user.");
-                        }
-                    }
-                    case 2 -> {
-                        String allUsers = UserDbWorker.Read(connection);
-                        StringExts.printGreen(allUsers);
-                    }
-                    case 3 -> {
-                        StringExts.printPurple("Enter user ID: ");
-                        int userId = scanner.nextInt();
-                        scanner.nextLine(); // Consume the newline character
-                        String userById = UserDbWorker.Read(connection, userId);
-                        StringExts.printGreen(userById);
-                    }
-                    case 4 -> {
-                        StringExts.printPurple("Enter user ID: ");
-                        int updateId = scanner.nextInt();
-                        scanner.nextLine(); // Consume the newline character
-                        StringExts.printPurple("Enter new username: ");
-                        String newUsername = scanner.nextLine();
-                        StringExts.printPurple("Enter new email: ");
-                        String newEmail = scanner.nextLine();
-                        boolean updateResult = UserDbWorker.Update(connection, updateId, newUsername, newEmail);
-
-                        if (updateResult) {
-                            StringExts.printGreen("User updated successfully.");
-                        } else {
-                            StringExts.printRed("Failed to update user.");
-                        }
-                    }
-                    case 5 -> {
-                        StringExts.printPurple("Enter user ID: ");
-                        int deleteId = scanner.nextInt();
-                        scanner.nextLine(); // Consume the newline character
-                        boolean deleteResult = UserDbWorker.Delete(connection, deleteId);
-
-                        if (deleteResult) {
-                            StringExts.printGreen("User deleted successfully.");
-                        } else {
-                            StringExts.printRed("Failed to delete user.");
-                        }
-                    }
-                    case 0 -> exit = true;
-                    default -> StringExts.printYellow("Invalid choice. Please try again.");
-                }
-
-                System.out.println();
-            } catch (InputMismatchException ex) {
-                scanner.nextLine();
-                StringExts.printRed("Enter integer next time");
-            }
-        } while (!exit);
-    }
-
-    private static final String choices = new StringBuilder()
-            .append("----- User Database Menu -----\n")
-            .append("1. Create User\n")
-            .append("2. Read All Users\n")
-            .append("3. Read User by ID\n")
-            .append("4. Update User\n")
-            .append("5. Delete User\n")
-            .append("0. Exit")
-            .toString();
 }

@@ -101,15 +101,17 @@ public class UserDAO implements AutoCloseable {
     public boolean update(Long userId, String username, String email) {
         try {
             User user = session.get(User.class, userId);
-            if (user != null) {
-                user.setUsername(username);
-                user.setEmail(email);
-                session.beginTransaction();
-                session.merge(user);
-                session.getTransaction().commit();
-                return true;
+            if (user == null) {
+                return false;
             }
-            return false;
+
+            user.setUsername(username);
+            user.setEmail(email);
+            session.beginTransaction();
+            session.merge(user);
+            session.getTransaction().commit();
+
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -125,15 +127,16 @@ public class UserDAO implements AutoCloseable {
     public boolean delete(Long userId) {
         try {
             User user = session.get(User.class, userId);
-            if (user != null) {
-                session.beginTransaction();
-                session.remove(user);
-                session.getTransaction().commit();
-                return true;
+            if (user == null) {
+                return false;
             }
+
+            session.beginTransaction();
+            session.remove(user);
+            session.getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        return true;
     }
 }
